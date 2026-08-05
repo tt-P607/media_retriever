@@ -36,7 +36,7 @@ class MediaRetrieverPlugin(BasePlugin):
         "从聊天历史检索并发送用户发过的媒体，"
         "自动下载管理文件，提供文件读取能力"
     )
-    plugin_version: str = "1.0.1"
+    plugin_version: str = "1.0.2"
 
     configs: list[type] = [MediaRetrieverConfig]
     dependent_components: list[str] = []

@@ -1,6 +1,6 @@
 {
     "name": "media_retriever",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "从聊天历史检索并发送用户发过的媒体，自动下载管理文件，提供文件读取能力",
     "author": "言柒",
     "dependencies": {

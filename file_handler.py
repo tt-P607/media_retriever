@@ -94,6 +94,8 @@ class FileMessageHandler(BaseEventHandler):
 
         service = cast(MediaRetrieverService, service)
 
+        platform = getattr(message, "platform", None)
+
         for file_item in file_items:
             data = file_item.get("data")
             if not isinstance(data, dict):
@@ -113,6 +115,7 @@ class FileMessageHandler(BaseEventHandler):
                     file_id=file_id,
                     file_name=file_name,
                     file_size=file_size,
+                    platform=platform,
                 )
             except Exception as e:
                 logger.warning(f"下载文件 {file_name} 失败: {e}")

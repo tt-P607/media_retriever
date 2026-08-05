@@ -40,8 +40,8 @@ class MediaRetrieverConfig(BaseConfig):
             description="下载超时秒数",
         )
         adapter_signature: str = Field(
-            default="snowluma_adapter:adapter:snowluma_adapter",
-            description="用于调用 OneBot 文件下载 API 的适配器签名",
+            default="",
+            description="回退用的适配器签名（留空则自动按消息平台匹配活跃适配器）",
         )
         wsl_mode: bool = Field(
             default=False,

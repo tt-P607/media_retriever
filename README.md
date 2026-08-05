@@ -2,14 +2,6 @@
 
 Neo-MoFox 插件：从聊天历史检索并发送用户发过的媒体，自动下载管理文件，提供文件读取能力。
 
-> **ℹ️ 说明（文件自动下载）**
->
-> **"文件自动下载"通过适配器的 `get_group_file_url` / `get_private_file_url` 命令获取下载地址**（OneBot v11 标准命令）。
->
-> - **napcat（onebot_adapter）与 snowluma_adapter 均支持这两个命令**，两个适配器下文件自动下载都可用；
-> - `[file] adapter_signature` 默认指向 `snowluma_adapter`，请按实际部署的适配器调整（如 napcat 对应 `onebot_adapter` 的适配器签名）；
-> - 若部署的适配器不支持这两个命令，仅"文件自动下载"会静默跳过，图片/表情包/语音/视频的检索与重发、`list_files` / `read_file` 文件读取等能力均不依赖该适配器，可正常使用。
-
 ## 功能
 
 - **媒体检索与重发**：通过聊天记录媒体占位符中的 `media_id` 精确发送用户发过的图片、表情包、语音、视频或文件。

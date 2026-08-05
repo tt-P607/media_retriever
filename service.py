@@ -14,7 +14,11 @@ from typing import Any
 
 import httpx
 
-from src.app.plugin_system.api.adapter_api import send_adapter_command
+from src.app.plugin_system.api.adapter_api import (
+    get_adapter,
+    list_active_adapters,
+    send_adapter_command,
+)
 from src.app.plugin_system.api.media_api import get_media_info
 from src.app.plugin_system.api.send_api import (
     send_emoji,
@@ -94,7 +98,7 @@ class MediaRetrieverService(BaseService):
 
     name: str = "media_retriever"
     description: str = "媒体检索与文件管理服务"
-    version: str = "1.0.1"
+    version: str = "1.0.2"
 
     def _cfg(self) -> MediaRetrieverConfig:
         """获取插件配置实例。"""
@@ -216,6 +220,28 @@ class MediaRetrieverService(BaseService):
 
     # ─── 文件管理 ───
 
+    def _resolve_adapter_signature(self, platform: str | None) -> str | None:
+        """解析用于文件 URL 命令的适配器签名。
+
+        优先选择与消息平台匹配的活跃适配器（napcat / snowluma 均支持
+        OneBot v11 的 get_group_file_url / get_private_file_url 命令），
+        用户无需手动配置；无匹配时回退到配置的 adapter_signature。
+
+        Args:
+            platform: 消息来源平台（可空）
+
+        Returns:
+            适配器签名；未找到可用适配器返回 None
+        """
+        cfg_adapter = self._cfg().file.adapter_signature.strip()
+        if platform:
+            for sig in list_active_adapters():
+                adapter = get_adapter(sig)
+                if adapter is not None and getattr(adapter, "platform", "") == platform:
+                    logger.debug(f"文件下载使用平台匹配适配器: {sig}")
+                    return sig
+        return cfg_adapter or None
+
     async def download_file(
         self,
         stream_id: str,
@@ -224,16 +250,19 @@ class MediaRetrieverService(BaseService):
         file_id: str,
         file_name: str,
         file_size: int | None,
+        platform: str | None = None,
     ) -> bool:
         """下载文件到 stream_id 子目录。
 
         流程：
         1. 检查文件大小是否超过 max_file_size_mb，超过则跳过
-        2. 通过 adapter_api 调用 OneBot API 获取下载 URL
+        2. 解析目标适配器：优先按消息 platform 匹配活跃适配器，
+           无匹配时回退到配置的 adapter_signature（默认无需配置）
+        3. 通过 adapter_api 调用 OneBot API 获取下载 URL
            - 群文件：get_group_file_url（需要 group_id + file_id）
            - 私聊文件：get_private_file_url（需要 user_id + file_id）
-        3. httpx 下载文件到 {data_dir}/{stream_id}/{file_name}
-        4. 检查总容量，超过 max_total_size_mb 则 LRU 删除最旧文件
+        4. httpx 下载文件到 {data_dir}/{stream_id}/{file_name}
+        5. 检查总容量，超过 max_total_size_mb 则 LRU 删除最旧文件
 
         Args:
             stream_id: 聊天流 ID
@@ -242,6 +271,7 @@ class MediaRetrieverService(BaseService):
             file_id: OneBot 文件 ID
             file_name: 保存的文件名
             file_size: 文件大小（字节），None 表示未知
+            platform: 消息来源平台，用于自动匹配适配器（可空）
 
         Returns:
             是否下载成功
@@ -255,7 +285,11 @@ class MediaRetrieverService(BaseService):
             logger.info(f"文件 {file_name} 大小 {file_size} 超过限制 {max_bytes}，跳过下载")
             return False
 
-        adapter_sig = cfg.file.adapter_signature
+        adapter_sig = self._resolve_adapter_signature(platform)
+        if not adapter_sig:
+            logger.warning(f"未找到可用的文件下载适配器，跳过下载 {file_name}")
+            return False
+
         download_url: str | None = None
 
         if group_id:
