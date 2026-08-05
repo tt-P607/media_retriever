@@ -26,6 +26,8 @@ class FileMessageHandler(BaseEventHandler):
     调用 MediaRetrieverService.download_file 下载文件。
     不阻断消息传播流程（返回 EventDecision.PASS）。
     """
+    handler_description = "监听文件消息并自动下载到插件存储目录"
+    handler_name = "file_message_handler"
 
     name: str = "file_message_handler"
     description: str = "监听文件消息并自动下载到插件存储目录"

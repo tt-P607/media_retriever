@@ -26,6 +26,8 @@ class SendUserMediaAction(BaseAction):
     - [语音(media_id):text]
     file 类型使用 list_files 返回的完整文件名作为 media_id。
     """
+    action_description = "发送用户之前发过的图片、表情包、语音、视频或文件"
+    action_name = "send_user_media"
 
     name: str = "send_user_media"
     description: str = (

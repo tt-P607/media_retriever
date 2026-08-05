@@ -20,6 +20,8 @@ logger = get_logger(__name__)
 
 class ListFilesTool(BaseTool):
     """列出当前聊天流中已下载的文件。"""
+    tool_description = "列出当前聊天中用户发送过并被自动下载保存的文件列表"
+    tool_name = "list_files"
 
     name: str = "list_files"
     description: str = (
@@ -56,6 +58,8 @@ class ListFilesTool(BaseTool):
 
 class ReadFileTool(BaseTool):
     """读取当前聊天流中已下载文件的内容。"""
+    tool_description = "读取当前聊天中已下载保存的文件内容"
+    tool_name = "read_file"
 
     name: str = "read_file"
     description: str = (

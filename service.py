@@ -95,6 +95,8 @@ class MediaRetrieverService(BaseService):
 
     对外提供媒体检索、文件下载/管理/LRU清理、文件读取、媒体发送能力。
     """
+    service_description = "媒体检索与文件管理服务"
+    service_name = "media_retriever"
 
     name: str = "media_retriever"
     description: str = "媒体检索与文件管理服务"
