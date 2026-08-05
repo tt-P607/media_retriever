@@ -1,0 +1,52 @@
+{
+    "name": "media_retriever",
+    "version": "1.0.1",
+    "description": "从聊天历史检索并发送用户发过的媒体，自动下载管理文件，提供文件读取能力",
+    "author": "言柒",
+    "dependencies": {
+        "plugins": [],
+        "components": []
+    },
+    "include": [
+        {
+            "component_type": "service",
+            "component_name": "media_retriever",
+            "dependencies": [],
+            "enabled": true
+        },
+        {
+            "component_type": "event_handler",
+            "component_name": "file_message_handler",
+            "dependencies": [],
+            "enabled": true
+        },
+        {
+            "component_type": "action",
+            "component_name": "send_user_media",
+            "dependencies": [],
+            "enabled": true
+        },
+        {
+            "component_type": "tool",
+            "component_name": "list_files",
+            "dependencies": [],
+            "enabled": true
+        },
+        {
+            "component_type": "tool",
+            "component_name": "read_file",
+            "dependencies": [],
+            "enabled": true
+        }
+    ],
+    "entry_point": "plugin.py",
+    "api_version": {
+        "send_api": "1.0.0",
+        "message_api": "1.0.0",
+        "media_api": "1.2.0",
+        "adapter_api": "1.0.0",
+        "service_api": "1.0.0"
+    },
+    "python_dependencies": [],
+    "dependencies_required": true
+}
