@@ -100,7 +100,6 @@ class MediaRetrieverService(BaseService):
 
     name: str = "media_retriever"
     description: str = "媒体检索与文件管理服务"
-    version: str = "1.0.2"
 
     def _cfg(self) -> MediaRetrieverConfig:
         """获取插件配置实例。"""
