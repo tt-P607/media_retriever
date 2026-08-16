@@ -252,11 +252,12 @@ class MediaRetrieverService(BaseService):
         file_name: str,
         file_size: int | None,
         platform: str | None = None,
+        force: bool = False,
     ) -> bool:
         """下载文件到 stream_id 子目录。
 
         流程：
-        1. 检查文件大小是否超过 max_file_size_mb，超过则跳过
+        1. 检查文件大小是否超过 max_file_size_mb，超过则跳过（force=True 时跳过此限制）
         2. 解析目标适配器：优先按消息 platform 匹配活跃适配器，
            无匹配时回退到配置的 adapter_signature（默认无需配置）
         3. 通过 adapter_api 调用 OneBot API 获取下载 URL
@@ -273,6 +274,8 @@ class MediaRetrieverService(BaseService):
             file_name: 保存的文件名
             file_size: 文件大小（字节），None 表示未知
             platform: 消息来源平台，用于自动匹配适配器（可空）
+            force: 是否强制下载（跳过 max_file_size_mb 大小限制）。自动下载
+                默认 False；工具主动下载超限文件时传 True。
 
         Returns:
             是否下载成功
@@ -282,7 +285,7 @@ class MediaRetrieverService(BaseService):
             return False
 
         max_bytes = int(cfg.file.max_file_size_mb * 1024 * 1024)
-        if file_size is not None and file_size > max_bytes:
+        if not force and file_size is not None and file_size > max_bytes:
             logger.info(f"文件 {file_name} 大小 {file_size} 超过限制 {max_bytes}，跳过下载")
             return False
 

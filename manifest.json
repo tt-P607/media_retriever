@@ -1,6 +1,6 @@
 {
   "name": "media_retriever",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "从聊天历史检索并发送用户发过的媒体，自动下载管理文件，提供文件读取能力",
   "author": "言柒",
   "license": "AGPL-3.0",
@@ -46,6 +46,12 @@
     {
       "component_type": "tool",
       "component_name": "read_file",
+      "dependencies": [],
+      "enabled": true
+    },
+    {
+      "component_type": "tool",
+      "component_name": "download_file",
       "dependencies": [],
       "enabled": true
     }
